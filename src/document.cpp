@@ -37,7 +37,7 @@
 #include "scene_list.h"
 #include "scene_model.h"
 #include "smart_quotes.h"
-#include "sound.h"
+#include "sound_manager.h"
 #include "spell_checker.h"
 #include "theme.h"
 #include "window.h"
@@ -97,7 +97,7 @@ namespace
 	public:
 		TextEdit(Document* document) :
 			QTextEdit(document),
-			m_document(document)
+            m_document(document)
 		{
 		}
 
@@ -107,13 +107,13 @@ namespace
 		virtual void insertFromMimeData(const QMimeData* source);
 		virtual bool event(QEvent* event);
 		virtual void keyPressEvent(QKeyEvent* event);
-		virtual void inputMethodEvent(QInputMethodEvent* event);
 
 	private:
 		QByteArray mimeToRtf(const QMimeData* source) const;
 
 	private:
 		Document* m_document;
+        SoundTheme* m_sound_theme{nullptr};
 	};
 
 	bool TextEdit::canInsertFromMimeData(const QMimeData* source) const
@@ -262,24 +262,10 @@ namespace
 
 		if (event->key() == Qt::Key_Insert) {
 			setOverwriteMode(!overwriteMode());
-		} else {
-			// Play sound effect
-			int key = event->key();
-			if (!(event->modifiers().testFlag(Qt::ControlModifier)) &&
-					!(event->modifiers().testFlag(Qt::MetaModifier))) {
-				if ((key == Qt::Key_Return) || (key == Qt::Key_Enter)) {
-					Sound::play(Qt::Key_Enter);
-				} else if ((key < Qt::Key_Escape) || (key == Qt::Key_unknown)) {
-					Sound::play(Qt::Key_Any);
-				}
-			}
-		}
-	}
+        }
 
-	void TextEdit::inputMethodEvent(QInputMethodEvent* event)
-	{
-		QTextEdit::inputMethodEvent(event);
-		Sound::play(Qt::Key_Any);
+        auto key = static_cast<Qt::Key>(event->key());
+        SoundManager::instance()->playSound(key);
 	}
 
 	QByteArray TextEdit::mimeToRtf(const QMimeData* source) const

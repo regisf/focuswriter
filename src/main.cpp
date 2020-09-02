@@ -24,7 +24,7 @@
 #include "locale_dialog.h"
 #include "paths.h"
 #include "session.h"
-#include "sound.h"
+#include "sound_manager.h"
 #include "symbols_model.h"
 #include "theme.h"
 
@@ -34,6 +34,17 @@
 #include <QIcon>
 #include <QSettings>
 #include <QStringList>
+
+// Find sounds inside the datadirs
+static void findSounds(const QStringList& datadirs) {
+    for (const auto &path : datadirs) {
+        QDir dir{path +  + "/sounds/"};
+        if (dir.exists()) {
+            SoundManager::instance()->setPath(path + "/sounds/");
+            break;
+        }
+    }
+}
 
 int main(int argc, char** argv)
 {
@@ -69,6 +80,11 @@ int main(int argc, char** argv)
 	datadirs.append(appdir);
 #endif
 
+#if defined(QT_DEBUG)
+    // Implement this path when working with QtCreator and shadow builds
+    datadirs.append(appdir + "/../focuswriter/resources/");
+#endif
+
 	// Handle portability
 	QString userdir;
 	if (portable.exists() && portable.isWritable()) {
@@ -86,13 +102,7 @@ int main(int argc, char** argv)
 		QIcon::setThemeSearchPaths(paths);
 	}
 
-	// Find sounds
-	for (const QString& path : datadirs) {
-		if (QFile::exists(path + "/sounds/")) {
-			Sound::setPath(path + "/sounds/");
-			break;
-		}
-	}
+    findSounds(datadirs);
 
 	// Find unicode names
 	SymbolsModel::setData(datadirs);

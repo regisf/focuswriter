@@ -94,6 +94,7 @@ INCLUDEPATH += src src/fileformats src/qtsingleapplication src/qtzip src/spellin
 
 # Specify program sources
 HEADERS += src/action_manager.h \
+        src/sound_manager.h \
 	src/alert.h \
 	src/alert_layer.h \
 	src/application.h \
@@ -125,7 +126,7 @@ HEADERS += src/action_manager.h \
 	src/settings_file.h \
 	src/shortcut_edit.h \
 	src/smart_quotes.h \
-	src/sound.h \
+	src/sound_theme.h \
 	src/stack.h \
 	src/stats.h \
 	src/symbols_dialog.h \
@@ -162,6 +163,7 @@ HEADERS += src/action_manager.h \
 	src/spelling/spell_checker.h
 
 SOURCES += src/action_manager.cpp \
+        src/sound_manager.cpp \
 	src/alert.cpp \
 	src/alert_layer.cpp \
 	src/application.cpp \
@@ -191,7 +193,7 @@ SOURCES += src/action_manager.cpp \
 	src/session_manager.cpp \
 	src/shortcut_edit.cpp \
 	src/smart_quotes.cpp \
-	src/sound.cpp \
+	src/sound_theme.cpp \
 	src/stack.cpp \
 	src/stats.cpp \
 	src/symbols_dialog.cpp \
@@ -240,8 +242,8 @@ macx {
 	ICONS.files = resources/images/icons/oxygen/hicolor
 	ICONS.path = Contents/Resources/icons
 
-	SOUNDS.files = resources/sounds
-	SOUNDS.path = Contents/Resources
+        SOUNDS.files = resources/sounds
+        SOUNDS.path = Contents/Resources
 
 	SYMBOLS.files = resources/symbols/symbols1000.dat
 	SYMBOLS.path = Contents/Resources
@@ -327,8 +329,8 @@ macx {
 	qm.path = $$DATADIR/focuswriter/translations
 	qm.CONFIG += no_check_exist
 
-	sounds.files = resources/sounds/*
-	sounds.path = $$DATADIR/focuswriter/sounds
+        sounds.files = resources/sounds/*
+        sounds.path = $$DATADIR/focuswriter/sounds
 
 	themes.files = resources/themes/*
 	themes.path = $$DATADIR/focuswriter/themes

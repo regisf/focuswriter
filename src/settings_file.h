@@ -47,7 +47,7 @@ public:
 	{
 		if (m_changed) {
 			write();
-			m_changed = false;
+            m_changed = false;
 		}
 	}
 

@@ -28,6 +28,7 @@ class DocumentCache;
 class DocumentWatcher;
 class LoadScreen;
 class SessionManager;
+class SoundManager;
 class Sound;
 class Stack;
 class TimerManager;
@@ -128,8 +129,6 @@ private:
 	QTabBar* m_tabs;
 	SessionManager* m_sessions;
 	TimerManager* m_timers;
-	Sound* m_key_sound;
-	Sound* m_enter_key_sound;
 
 	QWidget* m_footer;
 	QLabel* m_character_label;

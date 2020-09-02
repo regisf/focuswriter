@@ -37,7 +37,7 @@
 #include "session.h"
 #include "session_manager.h"
 #include "smart_quotes.h"
-#include "sound.h"
+#include "sound_manager.h"
 #include "stack.h"
 #include "symbols_dialog.h"
 #include "theme.h"
@@ -90,8 +90,6 @@ namespace
 Window::Window(const QStringList& command_line_files) :
 	m_toolbar(0),
 	m_loading(false),
-	m_key_sound(0),
-	m_enter_key_sound(0),
 	m_fullscreen(true),
 	m_save_positions(true)
 {
@@ -1154,25 +1152,23 @@ bool Window::saveDocument(int index)
 
 void Window::loadPreferences()
 {
-	if (Preferences::instance().typewriterSounds() && (!m_key_sound || !m_enter_key_sound)) {
+    auto sound_manager = SoundManager::instance();
+    sound_manager->setActive(Preferences::instance().typewriterSounds());
+
+    if (Preferences::instance().typewriterSounds()) {
 		if (m_load_screen->isVisible()) {
 			m_load_screen->setText(tr("Loading sounds"));
 		}
-		m_key_sound = new Sound(Qt::Key_Any, "keyany.wav", this);
-		m_enter_key_sound = new Sound(Qt::Key_Enter, "keyenter.wav", this);
 
-		if (!m_key_sound->isValid() || !m_enter_key_sound->isValid()) {
-			m_documents->alerts()->addAlert(new Alert(Alert::Warning,
-				tr("Unable to load typewriter sounds."),
-				QStringList(),
-				false));
-			delete m_key_sound;
-			delete m_enter_key_sound;
-			m_key_sound = m_enter_key_sound = 0;
-			Preferences::instance().setTypewriterSounds(false);
-		}
-	}
-	Sound::setEnabled(Preferences::instance().typewriterSounds());
+        sound_manager->loadTheme();
+
+        if (!sound_manager->isValid()) {
+            m_documents->alerts()->addAlert(new Alert(Alert::Warning,
+                tr("Unable to load typewriter sounds."),
+                QStringList(),
+                false));
+        }
+    }
 
 	m_save_positions = Preferences::instance().savePositions();
 
